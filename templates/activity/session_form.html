@@ -1,0 +1,65 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">YOUR GAMING TIME</div>
+        <h1 class="page-title">{{ page_title }}</h1>
+        <p class="text-secondary">
+            Record the time you spend playing your games.
+        </p>
+    </div>
+
+    <a href="{% url 'activity:session_list' %}"
+       class="btn btn-outline-secondary">
+        Back to Play History
+    </a>
+</div>
+
+<div class="form-panel panel">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}
+                    {% if field.field.required %}
+                        <span class="required-mark">*</span>
+                    {% endif %}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <div class="form-help">{{ field.help_text }}</div>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <div class="field-error">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">
+                Save Session
+            </button>
+
+            <a href="{% url 'activity:session_list' %}"
+               class="btn btn-outline-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

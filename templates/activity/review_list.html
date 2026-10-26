@@ -1,0 +1,116 @@
+
+{% extends "base.html" %}
+
+{% block title %}Reviews | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">YOUR OPINIONS</div>
+        <h1 class="page-title">Reviews</h1>
+        <p class="text-secondary">
+            Your ratings and thoughts on the games you play.
+        </p>
+    </div>
+
+    <a href="{% url 'activity:review_create' %}" class="btn btn-primary">
+        + Add Review
+    </a>
+</div>
+
+<div class="panel mb-4">
+    <form method="get" class="d-flex flex-wrap align-items-end gap-3">
+        <div>
+            <label for="rating" class="form-label">Filter by rating</label>
+
+            <select name="rating" id="rating" class="form-select">
+                <option value="">All ratings</option>
+
+                {% for value in ratings %}
+                    <option
+                        value="{{ value }}"
+                        {% if selected_rating == value|stringformat:"s" %}selected{% endif %}
+                    >
+                        {{ value }}/10
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Filter
+        </button>
+
+        <a
+            href="{% url 'activity:review_list' %}"
+            class="btn btn-outline-secondary"
+        >
+            Clear
+        </a>
+    </form>
+</div>
+
+<div class="section-heading mb-3">
+    <h2 class="section-title">All reviews</h2>
+    <span class="text-secondary">{{ reviews|length }} found</span>
+</div>
+
+{% if reviews %}
+    <div class="d-grid gap-3">
+        {% for review in reviews %}
+            <div class="panel">
+                <div class="d-flex flex-wrap justify-content-between gap-3">
+                    <div>
+                        <div class="eyebrow">
+                            <a href="{% url 'library:game_detail' review.game.pk %}">
+                                {{ review.game.title }}
+                            </a>
+                        </div>
+
+                        <h3 class="section-title mt-2">
+                            {{ review.title }}
+                        </h3>
+
+                        <p class="text-secondary">
+                            {{ review.created_at|date:"M d, Y" }}
+                        </p>
+                    </div>
+
+                    <span class="rating-pill">
+                        {{ review.rating }}/10
+                    </span>
+                </div>
+
+                <p class="detail-description">
+                    {{ review.review_text|truncatechars:240 }}
+                </p>
+
+                <a
+                    href="{% url 'activity:review_detail' review.pk %}"
+                    class="text-link"
+                >
+                    Read review →
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% else %}
+    <div class="empty-state panel">
+        <div class="empty-icon">★</div>
+
+        <h3>No reviews found</h3>
+
+        <p class="text-secondary">
+            Write your first review to record what you think about a game.
+        </p>
+
+        <a
+            href="{% url 'activity:review_create' %}"
+            class="btn btn-primary"
+        >
+            Write a Review
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

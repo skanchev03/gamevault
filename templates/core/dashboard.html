@@ -1,0 +1,127 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading mb-4">
+    <div>
+        <p class="eyebrow">YOUR GAMING OVERVIEW</p>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="text-muted">Your collection, your progress, your next adventure.</p>
+    </div>
+    <a href="{% url 'library:game_create' %}" class="btn btn-primary">
+        + Add a Game
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <p class="stat-label">Total Games</p>
+            <h2 class="stat-value">{{ stats.total_games }}</h2>
+            <span class="stat-caption">In your collection</span>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <p class="stat-label">Completed</p>
+            <h2 class="stat-value">{{ stats.completed_games }}</h2>
+            <span class="stat-caption">Games finished</span>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <p class="stat-label">Hours Played</p>
+            <h2 class="stat-value">
+                {% widthratio stats.total_playtime 60 1 %}
+            </h2>
+            <span class="stat-caption">Total recorded playtime</span>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <p class="stat-label">Average Rating</p>
+            <h2 class="stat-value">{{ stats.average_rating|floatformat:1 }}</h2>
+            <span class="stat-caption">Out of 10</span>
+        </div>
+    </div>
+</div>
+
+<div class="section-heading">
+    <div>
+        <p class="eyebrow">COLLECTION</p>
+        <h2 class="section-title">Recently Added</h2>
+    </div>
+    <a href="{% url 'library:game_list' %}" class="text-link">View all games →</a>
+</div>
+
+{% if recent_games %}
+<div class="row g-3 mb-5">
+    {% for game in recent_games %}
+    <div class="col-6 col-lg-4 col-xl-2">
+        {% include "partials/game_card.html" with game=game %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state mb-5">
+    <div class="empty-icon">🎮</div>
+    <h3>Your vault is waiting</h3>
+    <p>Add your first game to start building your personal collection.</p>
+    <a href="{% url 'library:game_create' %}" class="btn btn-primary">
+        Add Your First Game
+    </a>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">YOUR OPINIONS</p>
+                <h2 class="section-title">Recent Reviews</h2>
+            </div>
+            <a href="{% url 'activity:review_list' %}" class="text-link">View all →</a>
+        </div>
+
+        <div class="panel">
+            {% for review in recent_reviews %}
+            <a class="activity-row" href="{% url 'activity:review_detail' review.pk %}">
+                <div>
+                    <strong>{{ review.title }}</strong>
+                    <p class="text-muted mb-0">{{ review.game.title }}</p>
+                </div>
+                <span class="rating-pill">★ {{ review.rating }}/10</span>
+            </a>
+            {% empty %}
+            <p class="text-muted mb-0">Your reviews will appear here.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">YOUR GAMING TIME</p>
+                <h2 class="section-title">Recent Sessions</h2>
+            </div>
+            <a href="{% url 'activity:session_list' %}" class="text-link">View all →</a>
+        </div>
+
+        <div class="panel">
+            {% for session in recent_sessions %}
+            <div class="activity-row">
+                <div>
+                    <strong>{{ session.game.title }}</strong>
+                    <p class="text-muted mb-0">{{ session.played_on|date:"M j, Y" }}</p>
+                </div>
+                <span class="rating-pill">{{ session.duration_minutes }} min</span>
+            </div>
+            {% empty %}
+            <p class="text-muted mb-0">Your play sessions will appear here.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

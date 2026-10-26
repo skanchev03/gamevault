@@ -1,0 +1,44 @@
+
+{% extends "base.html" %}
+
+{% block title %}Delete Play Session | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">SESSION MANAGEMENT</div>
+        <h1 class="page-title">Delete Play Session</h1>
+        <p class="text-secondary">This action cannot be undone.</p>
+    </div>
+</div>
+
+<div class="panel delete-panel">
+    <div class="delete-icon">!</div>
+
+    <h2 class="section-title">Delete this session?</h2>
+
+    <p class="text-secondary">
+        You're about to delete a play session for
+        <strong>{{ session.game.title }}</strong>,
+        recorded on {{ session.played_on|date:"M d, Y" }}.
+    </p>
+
+    <div class="rating-pill">
+        {{ session.duration_minutes }} minutes played
+    </div>
+
+    <form method="post"
+          class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-danger">
+            Yes, delete session
+        </button>
+
+        <a href="{% url 'activity:session_list' %}"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

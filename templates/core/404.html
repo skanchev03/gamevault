@@ -1,0 +1,18 @@
+
+{% extends "base.html" %}
+
+{% block title %}Page Not Found | GameVault{% endblock %}
+
+{% block content %}
+<div class="empty-state panel">
+    <div class="empty-icon">🎮</div>
+    <div class="eyebrow">ERROR 404</div>
+    <h1 class="page-title">Lost in another world?</h1>
+    <p class="text-secondary">
+        The page you're looking for doesn't exist or may have been moved.
+    </p>
+    <a href="{% url 'core:dashboard' %}" class="btn btn-primary">
+        Return to Dashboard
+    </a>
+</div>
+{% endblock %}

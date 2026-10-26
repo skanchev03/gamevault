@@ -1,0 +1,44 @@
+
+{% extends "base.html" %}
+
+{% block title %}Delete {{ game.title }} | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">COLLECTION MANAGEMENT</div>
+        <h1 class="page-title">Delete Game</h1>
+        <p class="text-secondary">This action cannot be undone.</p>
+    </div>
+</div>
+
+<div class="panel delete-panel">
+    <div class="delete-icon">!</div>
+    <h2 class="section-title">Are you sure?</h2>
+
+    <p class="text-secondary">
+        You're about to delete <strong>{{ game.title }}</strong> from your
+        collection. Its associated reviews and play sessions will also be
+        deleted.
+    </p>
+
+    {% if game.cover_image_url %}
+        <img
+            src="{{ game.cover_image_url }}"
+            alt="{{ game.title }} cover"
+            class="delete-cover"
+        >
+    {% endif %}
+
+    <form method="post" class="d-flex flex-wrap justify-content-center gap-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            Yes, delete game
+        </button>
+        <a href="{% url 'library:game_detail' game.pk %}"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

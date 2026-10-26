@@ -1,0 +1,67 @@
+
+{% extends "base.html" %}
+
+{% block title %}Platforms | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">COLLECTION SETTINGS</div>
+        <h1 class="page-title">Platforms</h1>
+        <p class="text-secondary">Keep track of where you play.</p>
+    </div>
+    <a href="{% url 'library:platform_create' %}" class="btn btn-primary">
+        + Add Platform
+    </a>
+</div>
+
+<div class="section-heading mb-3">
+    <h2 class="section-title">Your platforms</h2>
+    <span class="text-secondary">{{ platforms|length }} total</span>
+</div>
+
+{% if platforms %}
+    <div class="row g-3">
+        {% for platform in platforms %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="panel h-100">
+                    <h3 class="game-card-title">{{ platform.name }}</h3>
+
+                    {% if platform.manufacturer %}
+                        <p class="text-secondary">
+                            {{ platform.manufacturer }}
+                        </p>
+                    {% else %}
+                        <p class="text-secondary">No manufacturer specified.</p>
+                    {% endif %}
+
+                    <div class="stat-caption mb-3">
+                        {{ platform.games.count }} game{{ platform.games.count|pluralize }}
+                    </div>
+
+                    {% if platform.games.exists %}
+                        <div class="game-card-genres">
+                            {% for game in platform.games.all|slice:":4" %}
+                                <a href="{% url 'library:game_detail' game.pk %}">
+                                    {{ game.title }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state panel">
+        <div class="empty-icon">▣</div>
+        <h3>No platforms yet</h3>
+        <p class="text-secondary">
+            Add platforms such as PC, PlayStation 5, Xbox, or Nintendo Switch.
+        </p>
+        <a href="{% url 'library:platform_create' %}" class="btn btn-primary">
+            Add your first platform
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

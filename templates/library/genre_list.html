@@ -1,0 +1,65 @@
+
+{% extends "base.html" %}
+
+{% block title %}Genres | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">COLLECTION SETTINGS</div>
+        <h1 class="page-title">Genres</h1>
+        <p class="text-secondary">Organize your games by genre.</p>
+    </div>
+    <a href="{% url 'library:genre_create' %}" class="btn btn-primary">
+        + Add Genre
+    </a>
+</div>
+
+<div class="section-heading mb-3">
+    <h2 class="section-title">All genres</h2>
+    <span class="text-secondary">{{ genres|length }} total</span>
+</div>
+
+{% if genres %}
+    <div class="row g-3">
+        {% for genre in genres %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="panel h-100">
+                    <h3 class="game-card-title">{{ genre.name }}</h3>
+
+                    {% if genre.description %}
+                        <p class="text-secondary">{{ genre.description }}</p>
+                    {% else %}
+                        <p class="text-secondary">No description added.</p>
+                    {% endif %}
+
+                    <div class="stat-caption mb-3">
+                        {{ genre.games.count }} game{{ genre.games.count|pluralize }}
+                    </div>
+
+                    {% if genre.games.exists %}
+                        <div class="game-card-genres">
+                            {% for game in genre.games.all|slice:":4" %}
+                                <a href="{% url 'library:game_detail' game.pk %}">
+                                    {{ game.title }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state panel">
+        <div class="empty-icon">◇</div>
+        <h3>No genres yet</h3>
+        <p class="text-secondary">
+            Create genres such as RPG, Action, Strategy, or Racing.
+        </p>
+        <a href="{% url 'library:genre_create' %}" class="btn btn-primary">
+            Create your first genre
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,139 @@
+
+{% extends "base.html" %}
+
+{% block title %}Game Library | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">YOUR COLLECTION</div>
+        <h1 class="page-title">Game Library</h1>
+        <p class="text-secondary">
+            Every adventure, all in one place.
+        </p>
+    </div>
+
+    <a href="{% url 'library:game_create' %}" class="btn btn-primary">
+        + Add Game
+    </a>
+</div>
+
+<div class="panel mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-lg-4">
+            <label for="search" class="form-label">Search games</label>
+            <input
+                type="search"
+                name="q"
+                id="search"
+                class="form-control"
+                placeholder="Title, developer..."
+                value="{{ query }}"
+            >
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-2">
+            <label for="status" class="form-label">Status</label>
+            <select name="status" id="status" class="form-select">
+                <option value="">All statuses</option>
+                {% for value, label in statuses %}
+                    <option value="{{ value }}"
+                        {% if selected_status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-2">
+            <label for="genre" class="form-label">Genre</label>
+            <select name="genre" id="genre" class="form-select">
+                <option value="">All genres</option>
+                {% for genre in genres %}
+                    <option value="{{ genre.pk }}"
+                        {% if selected_genre == genre.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ genre.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-2">
+            <label for="platform" class="form-label">Platform</label>
+            <select name="platform" id="platform" class="form-select">
+                <option value="">All platforms</option>
+                {% for platform in platforms %}
+                    <option value="{{ platform.pk }}"
+                        {% if selected_platform == platform.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ platform.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-2">
+            <label for="sort" class="form-label">Sort by</label>
+            <select name="sort" id="sort" class="form-select">
+                <option value="title" {% if selected_sort == "title" %}selected{% endif %}>
+                    Title A–Z
+                </option>
+                <option value="-title" {% if selected_sort == "-title" %}selected{% endif %}>
+                    Title Z–A
+                </option>
+                <option value="-date_added" {% if selected_sort == "-date_added" %}selected{% endif %}>
+                    Recently added
+                </option>
+                <option value="date_added" {% if selected_sort == "date_added" %}selected{% endif %}>
+                    Oldest added
+                </option>
+                <option value="release_date" {% if selected_sort == "release_date" %}selected{% endif %}>
+                    Oldest release
+                </option>
+                <option value="-release_date" {% if selected_sort == "-release_date" %}selected{% endif %}>
+                    Newest release
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">
+                Apply filters
+            </button>
+
+            <a href="{% url 'library:game_list' %}"
+               class="btn btn-outline-secondary">
+                Clear
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="section-heading mb-3">
+    <div>
+        <h2 class="section-title">Your games</h2>
+        <p class="text-secondary mb-0">
+            {{ games|length }} game{{ games|length|pluralize }} found
+        </p>
+    </div>
+</div>
+
+{% if games %}
+    <div class="game-grid">
+        {% for game in games %}
+            {% include "partials/game_card.html" with game=game %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state panel">
+        <div class="empty-icon">🎮</div>
+        <h3>No games found</h3>
+        <p class="text-secondary">
+            Try changing your search or filters, or add your first game.
+        </p>
+
+        <a href="{% url 'library:game_create' %}" class="btn btn-primary">
+            Add a Game
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

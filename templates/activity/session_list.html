@@ -1,0 +1,90 @@
+
+{% extends "base.html" %}
+
+{% block title %}Play History | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">YOUR GAMING TIME</div>
+        <h1 class="page-title">Play History</h1>
+        <p class="text-secondary">
+            Track your sessions and time spent playing.
+        </p>
+    </div>
+    <a href="{% url 'activity:session_create' %}" class="btn btn-primary">
+        + Log Session
+    </a>
+</div>
+
+<div class="panel mb-4">
+    <form method="get" class="d-flex flex-wrap align-items-end gap-3">
+        <div>
+            <label for="game" class="form-label">Filter by game</label>
+            <select name="game" id="game" class="form-select">
+                <option value="">All games</option>
+                {% for game in games %}
+                    <option value="{{ game.pk }}"
+                        {% if selected_game == game.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ game.title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{% url 'activity:session_list' %}"
+           class="btn btn-outline-secondary">Clear</a>
+    </form>
+</div>
+
+<div class="section-heading mb-3">
+    <h2 class="section-title">Recorded sessions</h2>
+    <span class="text-secondary">{{ sessions|length }} found</span>
+</div>
+
+{% if sessions %}
+    <div class="d-grid gap-3">
+        {% for session in sessions %}
+            <div class="panel">
+                <div class="d-flex flex-wrap justify-content-between gap-3">
+                    <div>
+                        <div class="eyebrow">
+                            <a href="{% url 'library:game_detail' session.game.pk %}">
+                                {{ session.game.title }}
+                            </a>
+                        </div>
+                        <h3 class="section-title mt-2">
+                            {{ session.played_on|date:"M d, Y" }}
+                        </h3>
+                        <p class="text-secondary mb-0">
+                            {{ session.notes|default:"No notes added." }}
+                        </p>
+                    </div>
+
+                    <div class="text-end">
+                        <div class="rating-pill">
+                            {{ session.duration_minutes }} min
+                        </div>
+                        <div class="d-flex gap-3 mt-3">
+                            <a href="{% url 'activity:session_update' session.pk %}"
+                               class="text-link">Edit</a>
+                            <a href="{% url 'activity:session_delete' session.pk %}"
+                               class="text-link">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state panel">
+        <div class="empty-icon">◷</div>
+        <h3>No play sessions yet</h3>
+        <p class="text-secondary">
+            Log a session to start tracking your gaming time.
+        </p>
+        <a href="{% url 'activity:session_create' %}"
+           class="btn btn-primary">Log Your First Session</a>
+    </div>
+{% endif %}
+{% endblock %}
