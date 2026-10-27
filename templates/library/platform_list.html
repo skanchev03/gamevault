@@ -24,7 +24,7 @@
     <div class="row g-3">
         {% for platform in platforms %}
             <div class="col-12 col-md-6 col-xl-4">
-                <div class="panel h-100">
+                <div class="panel h-100 d-flex flex-column">
                     <h3 class="game-card-title">{{ platform.name }}</h3>
 
                     {% if platform.manufacturer %}
@@ -40,7 +40,7 @@
                     </div>
 
                     {% if platform.games.exists %}
-                        <div class="game-card-genres">
+                        <div class="game-card-genres mb-3">
                             {% for game in platform.games.all|slice:":4" %}
                                 <a href="{% url 'library:game_detail' game.pk %}">
                                     {{ game.title }}
@@ -48,6 +48,15 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+
+                    <div class="mt-auto pt-3">
+                        <a
+                            href="{% url 'library:platform_delete' platform.pk %}"
+                            class="btn btn-outline-danger btn-sm"
+                        >
+                            Delete Platform
+                        </a>
+                    </div>
                 </div>
             </div>
         {% endfor %}

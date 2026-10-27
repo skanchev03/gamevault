@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+
+{% block title %}Delete {{ platform.name }} | GameVault{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">COLLECTION MANAGEMENT</div>
+        <h1 class="page-title">Delete Platform</h1>
+        <p class="text-secondary">This action cannot be undone.</p>
+    </div>
+</div>
+
+<div class="panel delete-panel">
+    <div class="delete-icon">!</div>
+    <h2 class="section-title">Are you sure?</h2>
+
+    <p class="text-secondary">
+        You're about to delete the platform
+        <strong>{{ platform.name }}</strong>.
+        {% if platform.games.exists %}
+            It is currently assigned to {{ platform.games.count }}
+            game{{ platform.games.count|pluralize }}.
+            Those games will remain in your collection, but this platform
+            will be removed from them.
+        {% else %}
+            This platform is not currently assigned to any games.
+        {% endif %}
+    </p>
+
+    <form method="post" class="d-flex flex-wrap justify-content-center gap-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            Yes, delete platform
+        </button>
+        <a href="{% url 'library:platform_list' %}"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

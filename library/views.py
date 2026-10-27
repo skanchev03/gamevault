@@ -171,6 +171,20 @@ def genre_create(request):
     )
 
 
+def genre_delete(request, pk):
+    genre = get_object_or_404(Genre, pk=pk)
+
+    if request.method == "POST":
+        genre.delete()
+        return redirect("library:genre_list")
+
+    return render(
+        request,
+        "library/genre_confirm_delete.html",
+        {"genre": genre},
+    )
+
+
 def platform_list(request):
     platforms = Platform.objects.prefetch_related("games")
 
@@ -196,4 +210,18 @@ def platform_create(request):
             "page_title": "Add a Platform",
             "cancel_url": "library:platform_list",
         },
+    )
+
+
+def platform_delete(request, pk):
+    platform = get_object_or_404(Platform, pk=pk)
+
+    if request.method == "POST":
+        platform.delete()
+        return redirect("library:platform_list")
+
+    return render(
+        request,
+        "library/platform_confirm_delete.html",
+        {"platform": platform},
     )

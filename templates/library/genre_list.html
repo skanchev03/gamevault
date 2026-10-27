@@ -24,7 +24,7 @@
     <div class="row g-3">
         {% for genre in genres %}
             <div class="col-12 col-md-6 col-xl-4">
-                <div class="panel h-100">
+                <div class="panel h-100 d-flex flex-column">
                     <h3 class="game-card-title">{{ genre.name }}</h3>
 
                     {% if genre.description %}
@@ -38,7 +38,7 @@
                     </div>
 
                     {% if genre.games.exists %}
-                        <div class="game-card-genres">
+                        <div class="game-card-genres mb-3">
                             {% for game in genre.games.all|slice:":4" %}
                                 <a href="{% url 'library:game_detail' game.pk %}">
                                     {{ game.title }}
@@ -46,6 +46,15 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+
+                    <div class="mt-auto pt-3">
+                        <a
+                            href="{% url 'library:genre_delete' genre.pk %}"
+                            class="btn btn-outline-danger btn-sm"
+                        >
+                            Delete Genre
+                        </a>
+                    </div>
                 </div>
             </div>
         {% endfor %}
